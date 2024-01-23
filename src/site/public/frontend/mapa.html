@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa de Viagem</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        #mapid {
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="mapid"></div>
+
+    <script>
+        // Dados de localização injetados pelo servidor
+        var locData = [];
+
+        var mymap = L.map('mapid').setView([0, 0], 2); // Define um centro e zoom padrão
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(mymap);
+
+        var markers = [];
+
+        // Adiciona marcadores para cada localização
+        locData.forEach(function(loc) {
+            var date = new Date(loc.data_hora);
+            var formattedDate = date.toLocaleDateString('pt-BR') + ', ' + date.toLocaleTimeString('pt-BR');
+            var marker = L.marker([loc.latitude, loc.longitude]).addTo(mymap);
+            marker.bindPopup(formattedDate).openPopup();
+            markers.push(marker);
+        });
+
+        // Ajusta a visualização do mapa para incluir todos os marcadores ou usa o centro padrão
+        if (markers.length > 0) {
+            var group = new L.featureGroup(markers);
+            mymap.fitBounds(group.getBounds());
+        } else {
+            mymap.setView([0, 0], 2); // Usa o centro e zoom padrão se não houver dados
+        }
+    </script>
+</body>
+</html>

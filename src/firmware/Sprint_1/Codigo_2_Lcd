@@ -1,0 +1,134 @@
+// Este código precisa ser rodado no wokwi junto de seu diagrama
+
+//Diagrama:
+//{
+//   "version": 1,
+//   "author": "Murilo Silva",
+//   "editor": "wokwi",
+//   "parts": [
+//     { "type": "wokwi-breadboard-half", "id": "bb1", "top": 131.4, "left": 31.6, "attrs": {} },
+//     { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 9.6, "left": -110.36, "attrs": {} },
+//     {
+//       "type": "wokwi-led",
+//       "id": "led1",
+//       "top": 212.8,
+//       "left": 196.2,
+//       "rotate": 180,
+//       "attrs": { "color": "red" }
+//     },
+//     {
+//       "type": "wokwi-resistor",
+//       "id": "r1",
+//       "top": 177.6,
+//       "left": 191.45,
+//       "rotate": 90,
+//       "attrs": { "value": "1000" }
+//     },
+//     {
+//       "type": "wokwi-pushbutton",
+//       "id": "btn1",
+//       "top": 191.4,
+//       "left": 79.8,
+//       "rotate": 90,
+//       "attrs": { "color": "green" }
+//     },
+//     {
+//       "type": "wokwi-resistor",
+//       "id": "r2",
+//       "top": 292.8,
+//       "left": 76.25,
+//       "rotate": 90,
+//       "attrs": { "value": "1000" }
+//     },
+//     {
+//       "type": "wokwi-lcd1602",
+//       "id": "lcd1",
+//       "top": -32,
+//       "left": 82.4,
+//       "attrs": { "pins": "i2c" }
+//     }
+//   ],
+//   "connections": [
+//     [ "esp:TX", "$serialMonitor:RX", "", [] ],
+//     [ "esp:RX", "$serialMonitor:TX", "", [] ],
+//     [ "esp:5V", "bb1:bp.1", "red", [ "h-28.65", "v86.4" ] ],
+//     [ "esp:GND.1", "bb1:bn.3", "black", [ "h-47.85", "v182.4", "h230.4", "v-9.6" ] ],
+//     [ "bb1:bp.25", "bb1:tp.25", "red", [ "v-0.9", "h20.8", "v-172.8" ] ],
+//     [ "bb1:tn.25", "bb1:bn.25", "black", [ "v9.5", "h49.6", "v144" ] ],
+//     [ "esp:19", "bb1:6b.g", "orange", [ "h28.8", "v124.8" ] ],
+//     [ "bb1:8b.h", "bb1:bp.6", "red", [ "v0" ] ],
+//     [ "esp:18", "bb1:17t.d", "violet", [ "h0" ] ],
+//     [ "lcd1:GND", "bb1:tn.1", "black", [ "h-19.2" ] ],
+//     [ "lcd1:VCC", "bb1:tp.2", "red", [ "h0" ] ],
+//     [ "esp:21", "lcd1:SDA", "violet", [ "h57.6", "v-115.2" ] ],
+//     [ "esp:22", "lcd1:SCL", "blue", [ "h38.4", "v-76.8" ] ],
+//     [ "led1:A", "bb1:17t.e", "", [ "$bb" ] ],
+//     [ "led1:C", "bb1:18t.e", "", [ "$bb" ] ],
+//     [ "r1:1", "bb1:tn.15", "", [ "$bb" ] ],
+//     [ "r1:2", "bb1:18t.d", "", [ "$bb" ] ],
+//     [ "r2:1", "bb1:6b.h", "", [ "$bb" ] ],
+//     [ "r2:2", "bb1:bn.5", "", [ "$bb" ] ],
+//     [ "btn1:1.l", "bb1:8t.a", "", [ "$bb" ] ],
+//     [ "btn1:2.l", "bb1:6t.a", "", [ "$bb" ] ],
+//     [ "btn1:1.r", "bb1:8b.f", "", [ "$bb" ] ],
+//     [ "btn1:2.r", "bb1:6b.f", "", [ "$bb" ] ]
+//   ],
+//   "dependencies": {}
+// }
+
+//Bibliotecas ultilizadas:
+//# Wokwi Library List
+// # See https://docs.wokwi.com/guides/libraries
+// # Automatically added based on includes:
+// LiquidCrystal I2C
+// LiquidCrystal I2C
+
+
+
+#include <Arduino.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Endereço I2C do LCD 16x2
+
+const int buttonPin = 19;
+const int ledPin = 18;
+bool status = false;
+
+void setup() {
+  pinMode(buttonPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Wire.begin();
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("Clique para ver");
+  lcd.setCursor(0, 1);
+  lcd.print("o material");
+  Serial.begin(9600);
+}
+
+void loop() {
+  int buttonState = digitalRead(buttonPin);
+
+  if (buttonState == HIGH) {
+    exibirMaterial();
+  }
+}
+
+void exibirMaterial() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Roteador");
+  lcd.setCursor(0, 1);
+  lcd.print("Loc 1.1 Caixa B");
+  Serial.println("Botao pressionado");
+  digitalWrite(ledPin, HIGH);
+  delay(5000);
+  digitalWrite(ledPin, LOW);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Clique para ver");
+  lcd.setCursor(0, 1);
+  lcd.print("o material");
+}
